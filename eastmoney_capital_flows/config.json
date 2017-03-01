@@ -1,0 +1,13 @@
+{
+  "stocks_host": "192.168.31.181",
+  "stocks_db": "stock",
+  "stocks_user": "ope1",
+  "stocks_password": "Siteope",
+  "stocks_table": "code_stocka_wind",
+  "stocks_field": "stock_code",
+  "store_host": "192.168.31.181",
+  "store_db": "stock",
+  "store_user": "ope1",
+  "store_password": "Siteope",
+  "store_table": "eastmoney_zjlx"
+}
