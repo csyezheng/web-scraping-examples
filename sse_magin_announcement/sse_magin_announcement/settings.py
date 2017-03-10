@@ -64,9 +64,9 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'sse_magin_announcement.pipelines.SseMaginAnnouncementPipeline': 300,
-#}
+ITEM_PIPELINES = {
+    'sse_magin_announcement.pipelines.SseMaginAnnouncementPipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
@@ -88,3 +88,8 @@ ROBOTSTXT_OBEY = True
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+STORE_HOST = '192.168.31.181'
+STORE_USER = 'ope1'
+STORE_PASSWORD = 'Siteope'
+STORE_DB = 'test'

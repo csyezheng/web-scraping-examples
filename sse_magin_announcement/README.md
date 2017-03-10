@@ -1,0 +1,3 @@
+# sse_magin_announcement
+
+使用scrapy抓取上海证券交易所的融资融券公告
