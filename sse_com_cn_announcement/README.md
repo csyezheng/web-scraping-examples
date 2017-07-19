@@ -1,3 +1,0 @@
-# sse_com_cn_announcement
-
-使用scrapy抓取上海证券交易所的最新公告
