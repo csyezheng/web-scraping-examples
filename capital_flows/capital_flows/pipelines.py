@@ -5,12 +5,13 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
-import json
 import logging
 import pymysql
 from datetime import datetime
 
+
 class CapitalFlowsPipeline(object):
+
     def __init__(self, mysql_host, mysql_user, mysql_password, store_db, store_table, status_db, status_table):
         self.mysql_host = mysql_host
         self.mysql_user = mysql_user
@@ -31,17 +32,8 @@ class CapitalFlowsPipeline(object):
             status_db=crawler.settings.get('STATUS_DB'),
             status_table=crawler.settings.get('STATUS_TABLE')
         )
-        """
-        return cls(
-            mysql_host='192.168.31.181',
-            store_db='test',
-            mysql_user='ope1',
-            mysql_password='Siteope',
-            store_table='eastmoney_zjlx'
-        )
-        """
 
-    def clear_data(self):
+    def __clear_data(self):
         """store data into database"""
 
         conn = pymysql.connect(host=self.mysql_host,
@@ -52,16 +44,14 @@ class CapitalFlowsPipeline(object):
                                cursorclass=pymysql.cursors.DictCursor)
         try:
             with conn.cursor() as cur:
-                insert_sql = 'delete from `{0}'.format(self.store_table)
+                insert_sql = 'delete from {0}'.format(self.store_table)
                 cur.execute(insert_sql, ())
             conn.commit()
         finally:
             conn.close()
 
-
-
     def open_spider(self, spider):
-        self.clear_data()
+        self.__clear_data()
         self.conn = pymysql.connect(host=self.mysql_host,
                                     db=self.store_db,
                                     user=self.mysql_user,
@@ -73,20 +63,6 @@ class CapitalFlowsPipeline(object):
             cur.execute(insert_sql, ())
         self.conn.commit()
         self.begin_time = datetime.now()
-
-
-
-
-
-    def close_spider(self, spider):
-        self.conn.commit()
-        logging.info('------------------------------------ store data done -------------------------------')
-        self.conn.close()
-        self.end_time = datetime.now()
-        self.store_status(self.begin_time, self.end_time)
-
-
-
 
     def process_item(self, item, spider):
         with self.conn.cursor() as cursor:
@@ -112,6 +88,18 @@ class CapitalFlowsPipeline(object):
                 print(e)
                 self.conn.rollback()
         return item
+
+    def close_spider(self, spider):
+        self.conn.commit()
+        logging.info('------------------------------------ store data done -------------------------------')
+        self.conn.close()
+        self.end_time = datetime.now()
+        self.store_status(self.begin_time, self.end_time)
+
+
+
+
+
 
 
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 #-*- encoding:utf-8 -*-
 
-import logging
 import scrapy
 import pymysql
 from ..items import CapitalFlowsItem
@@ -25,24 +24,25 @@ class CapitalSpider(scrapy.Spider):
                 records = cur.fetchall()
                 for record in records:
                     stock, sign = record['stock_code'].split('.')
-                    if sign == 'SH':
-                        sign = '1'
-                    else:
-                        sign = '2'
+                    sign = '1' if sign == 'SH' else '2'
                     stock += sign
                     self.stocks.append(stock)
             finally:
                 conn.close()
 
-
     def start_requests(self):
         for stock in self.stocks:
             data = 'data:[x]'
-            url = 'http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx?type=CT&cmd={0}&sty=CTBFTA&st=z&sr=&p=&ps=&cb=&js=var%20tab_data=({1})&token=70f12f2f4f091e459a279469fe49eca5'.format(stock, data)
-            yield scrapy.Request(url=url, callback=self.parse)
+            url = ('http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx?'
+                   'type=CT&cmd={0}&sty=CTBFTA&st=z&sr=&p=&ps=&cb=&js=var%20tab_data=({1})'
+                   '&token=70f12f2f4f091e459a279469fe49eca5').format(stock, data)
+            headers = {'Referer': 'http://data.eastmoney.com/zjlx/',
+                       'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                                     'Ubuntu Chromium/57.0.2987.98 Chrome/57.0.2987.98 Safari/537.36'}
+            yield scrapy.Request(url=url, headers=headers, callback=self.parse)
 
     def parse(self, response):
-        logging.info('-------------------------- start parse ----------------------------------------------')
+        self.logger.info('-------------------------- start parse ----------------------------------------------')
         raw_data = response.xpath('//body//p//text()').extract_first().split('"')[1]
         data_lst = raw_data.split(',')
         item = CapitalFlowsItem()
