@@ -1,3 +1,0 @@
-# sse_listing_announcement
-
-使用scrapy抓取上海证券交易所的发行上市公告
